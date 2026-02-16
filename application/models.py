@@ -17,10 +17,7 @@ class Customer(db.Model):
     name = db.Column(db.String , nullable=False)
     address = db.Column(db.String, nullable=False)
     mobile = db.Column(db.String, nullable=False)
-
-class Category(db.Model):
-    id = db.Column(db.Integer, primary_key =True , autoincrement=True)
-    name = db.Column(db.String, unique=True , nullable=False)
+    bookings = db.relationship("Booking", backref="customer", lazy=True)
 
 
 class Professional(db.Model):
@@ -31,15 +28,21 @@ class Professional(db.Model):
     address = db.Column(db.String, nullable=False)
     mobile = db.Column(db.String, nullable=False)
     experiance = db.Column(db.String,nullable = False)
-    cat_id = db.Column(db.Integer ,db.ForeginKey("Category.id") , nullable=False )
+    status = db.Column(db.String, nullable=False)
+    resume_url = db.Column(db.String, nullable=False)
+    packages = db.relationship("Package", backref="professional", lazy=True)
+    bookings = db.relationship("Booking", backref="professional", lazy=True)
 
 class Package(db.Model):
     id = db.Column(db.Integer, primary_key =True , autoincrement=True)
     title = db.Column(db.String, unique=True , nullable=False)
     price = db.Column(db.String , nullable=False)
     description= db.Column(db.String , nullable=False)
-    cat_id = db.Column(db.Integer ,db.ForeginKey("Category.id") , nullable=False )
-    prof_id = db.Column(db.Integer ,db.ForeginKey("Professional.id") , nullable=False )
+    prof_id = db.Column(db.Integer ,db.ForeignKey("professional.id") , nullable=False )
+    status = db.Column(db.String, nullable=False)
+    start_date = db.Column(db.Date , nullable =False)
+    end_date = db.Column(db.Date , nullable =False)
+    bookings = db.relationship("Booking", backref="package", lazy=True)
 
 
 class Booking(db.Model):
@@ -48,10 +51,10 @@ class Booking(db.Model):
     total_price = db.Column(db.String , nullable=False)
     start_time = db.Column(db.Time , nullable =False)
     end_time = db.Column(db.Time , nullable =False) 
-    date = db.Column(db.DateTime , nullable =False)
-    cat_id = db.Column(db.Integer ,db.ForeginKey("Category.id") , nullable=False )
-    prof_id = db.Column(db.Integer ,db.ForeginKey("Professional.id") , nullable=False )
-    pack_id =  db.Column(db.Integer ,db.ForeginKey("Package.id") , nullable=False )
-    cust_id = db.Column(db.Integer ,db.ForeginKey("Customer.id") , nullable=False )
+    date = db.Column(db.Date , nullable =False)
+    status = db.Column(db.String, nullable=False)
+    prof_id = db.Column(db.Integer ,db.ForeignKey("professional.id") , nullable=False )
+    pack_id =  db.Column(db.Integer ,db.ForeignKey("package.id") , nullable=False )
+    cust_id = db.Column(db.Integer ,db.ForeignKey("customer.id") , nullable=False)
 
 
