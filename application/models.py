@@ -21,7 +21,7 @@ class Customer(db.Model, UserMixin):
     address = db.Column(db.String, nullable=False)
     mobile = db.Column(db.String, nullable=False)
     bookings = db.relationship("Booking", backref="customer", lazy=True)
-
+    status = db.Column(db.String, nullable=False)
     def get_id(self):
         return str(self.email)
 
@@ -55,7 +55,6 @@ class Package(db.Model):
 
 class Booking(db.Model):
     id = db.Column(db.Integer, primary_key =True , autoincrement=True)
-    title = db.Column(db.String, unique=True , nullable=False)
     total_price = db.Column(db.String , nullable=False)
     start_time = db.Column(db.Time , nullable =False)
     end_time = db.Column(db.Time , nullable =False) 

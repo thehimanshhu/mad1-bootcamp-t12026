@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">HomeEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-5">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link" href="#">Search</a>
+                    </li>
+                    <li class="nav-item ">
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/logout">logout</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="card mt-5 ms-5 me-5">
+        <div class="card-header">
+            <div class="d-flex d-inline">
+                <h3>Packages</h3>
+            </div>
+
+        </div>
+        <div class="card-body">
+            <div class="row ">
+                {% for package in packages %}
+                <div class="col-3 ">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">{{ package.title }}</h5>
+                            <p class="card-text">{{ package.description }}</p>
+                            
+                            <p class="card-text"> Professional: {{ package.professional.name }}</p>
+                            <p class="card-text"><strong>Price:</strong> ${{ package.price }}</p>
+                            <p class="card-text"><strong>Start Date:</strong> {{ package.start_date }}</p>
+                            <p class="card-text"><strong>End Date:</strong> {{ package.end_date }}</p>
+                            <a  type="button" class="btn btn-primary ms-auto"
+                                data-bs-toggle="modal" data-bs-target="#bookpack{{ package.id }}">
+                                Book Now
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="bookpack{{ package.id }}" tabindex="-1"
+                                aria-labelledby="addPackageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="addPackageModalLabel">Book Package</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form method="post" action="/customer/book_package/{{ package.id }}">
+                                                
+                                                <div class="form-floating mb-3">
+                                                    <input type="date" class="form-control" id="floatingStartDate"
+                                                        required placeholder="Date" name="start_date" value="{{package.date}}">
+                                                    <label for="floatingStartDate">Date</label>
+                                                </div>
+                                                <div class="form-floating mb-3">
+                                                    <input type="time" class="form-control" id="floatingEndDate"
+                                                        required placeholder="End Date" name="end_date" value="{{package.time}}">
+                                                    <label for="floatingEndDate">Time</label>
+                                                </div>
+
+                                                <button type="submit" class="btn btn-primary">Book</button>
+
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+
+            </div>
+
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
