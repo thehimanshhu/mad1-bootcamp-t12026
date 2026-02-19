@@ -38,11 +38,13 @@ def register():
         address = request.form.get("prof_address")
         mobile = request.form.get("prof_mobile")
         experiance = request.form.get("prof_experiance")
+        resume = request.files.get("prof_resume")
         prof = db.session.query(Professional).filter_by(email=email).first()
         if prof:
             return "Professional with this email already exists"
         else:
-            newprof = Professional(name=name,email=email,password=password,address=address,mobile=mobile,experiance=experiance,resume_url="dummy",status="pending")
+            resume.save(f"static/{email}.pdf")
+            newprof = Professional(name=name,email=email,password=password,address=address,mobile=mobile,experiance=experiance,resume_url=f"static/{email}.pdf",status="Registered")
             db.session.add(newprof)
             db.session.commit()
         return redirect("/login")
@@ -77,14 +79,24 @@ def login():
 @login_required
 def customer_dashboard():
     packs = db.session.query(Package).filter_by(status="Active").all()
-    return render_template("customer/dashboard.html" , cu=current_user, packages=packs)
+    bookings = current_user.bookings
+    packages = []
+    for pack in packs:
+        print(pack.start_date , pack.end_date)
+        print(datetime.now().date())
+        print(type(pack.start_date) , type(datetime.now().date()))
+        if pack.start_date <= datetime.now().date() <= pack.end_date:
+            packages.append(pack)
+    
+    return render_template("customer/dashboard.html" , cu=current_user, packages=packages, bookings=bookings)
 
 
 @app.route("/professional/dashboard")
 @login_required
 def professional_dashboard():
     packages = db.session.query(Package).filter_by(prof_id=current_user.id).all()
-    return render_template("professional/dashboard.html" , cu=current_user, packages=packages)
+    bookings = current_user.bookings
+    return render_template("professional/dashboard.html" , cu=current_user, packages=packages, bookings=bookings)
 
 @app.route("/admin/dashboard")
 @login_required
@@ -154,6 +166,36 @@ def add_package():
     else:
         newpack = Package(title=title,description=description,price=price,start_date=start_date,end_date=end_date,prof_id=current_user.id,status="Active")
         db.session.add(newpack)
+        db.session.commit()
+    return redirect("/professional/dashboard")
+
+@app.route("/customer/book/<int:pack_id>" , methods=["POST"])
+@login_required
+def book_package(pack_id):
+    pack = db.session.query(Package).filter_by(id=pack_id).first()
+    date = request.form.get("date")
+    time = request.form.get("time")
+    
+    if pack and pack.status=="Active":
+        if pack.start_date <= datetime.strptime(date , "%Y-%m-%d").date() <= pack.end_date:
+            newbooking = Booking(cust_id=current_user.id,pack_id=pack_id , prof_id = pack.prof_id , status="Requested" , date =datetime.strptime(date , "%Y-%m-%d").date() , start_time = datetime.strptime(time , "%H:%M").time() , total_price = 0)
+            db.session.add(newbooking)
+            db.session.commit()
+            return redirect("/customer/dashboard")
+        else:
+            return "Package not available for the selected date"
+    else:
+        return "Package not available"
+
+@app.route("/professional/<string:action>/<int:booking_id>")
+@login_required
+def professional_booking_action(action, booking_id):
+    booking = db.session.query(Booking).filter_by(id=booking_id).first()
+    if booking:
+        if action == "accept" and booking.status=="Requested":
+            booking.status = "Accepted"
+        elif action == "reject" and booking.status=="Requested":
+            booking.status = "Rejected"
         db.session.commit()
     return redirect("/professional/dashboard")
 

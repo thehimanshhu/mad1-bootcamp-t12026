@@ -88,7 +88,8 @@
                                 <td>{{ prof.email }}</td>
                                 <td>{{ prof.experiance }}</td>
                                 <td>
-                                    <a href="/admin/professional/Flag/{{ prof.id }}" class="btn btn-sm btn-primary">Flag</a>
+                                    <a href="/admin/professional/Flag/{{ prof.id }}"
+                                        class="btn btn-sm btn-primary">Flag</a>
 
                                 </td>
                             </tr>
@@ -118,8 +119,30 @@
                                 <td>{{ prof.email }}</td>
                                 <td>{{ prof.experiance }}</td>
                                 <td>
-                                    <a href="/admin/professional/Accept/{{ prof.id }}" class="btn btn-sm btn-primary">Accept</a>
-                                    <a href="/admin/professional/Reject/{{ prof.id }}" class="btn btn-sm btn-danger">Reject</a>
+                                    <button class="btn btn-sm btn-secondary" data-bs-toggle="modal"
+                                        data-bs-target="#resumeModal{{ prof.id }}">view Resume</button>
+                                    <a href="/admin/professional/Accept/{{ prof.id }}"
+                                        class="btn btn-sm btn-primary">Accept</a>
+                                    <a href="/admin/professional/Reject/{{ prof.id }}"
+                                        class="btn btn-sm btn-danger">Reject</a>
+                                    <div class="modal fade" id="resumeModal{{ prof.id }}" tabindex="-1"
+                                        aria-labelledby="resumeModalLabel{{ prof.id }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="resumeModalLabel{{ prof.id }}">
+                                                        Resume</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <embed src="http://127.0.0.1:5000/{{ prof.resume_url }}" width="100%" height="500px">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
                                 </td>
                             </tr>
                             {% endif %}
@@ -147,7 +170,8 @@
                                 <td>{{ prof.email }}</td>
                                 <td>{{ prof.experiance }}</td>
                                 <td>
-                                    <a href="/admin/professional/Unflag/{{ prof.id }}" class="btn btn-sm btn-primary">Unflag</a>
+                                    <a href="/admin/professional/Unflag/{{ prof.id }}"
+                                        class="btn btn-sm btn-primary">Unflag</a>
 
                                 </td>
                             </tr>
@@ -238,7 +262,8 @@
                                 <td>{{ cust.address }}</td>
                                 <td>{{ cust.mobile }}</td>
                                 <td>
-                                    <a href="/admin/customer/Unflag/{{ cust.id }}" class="btn btn-sm btn-primary">Unflag</a>
+                                    <a href="/admin/customer/Unflag/{{ cust.id }}"
+                                        class="btn btn-sm btn-primary">Unflag</a>
                                 </td>
                             </tr>
 

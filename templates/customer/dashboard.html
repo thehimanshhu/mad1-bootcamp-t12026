@@ -58,13 +58,13 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ package.title }}</h5>
                             <p class="card-text">{{ package.description }}</p>
-                            
+
                             <p class="card-text"> Professional: {{ package.professional.name }}</p>
                             <p class="card-text"><strong>Price:</strong> ${{ package.price }}</p>
                             <p class="card-text"><strong>Start Date:</strong> {{ package.start_date }}</p>
                             <p class="card-text"><strong>End Date:</strong> {{ package.end_date }}</p>
-                            <a  type="button" class="btn btn-primary ms-auto"
-                                data-bs-toggle="modal" data-bs-target="#bookpack{{ package.id }}">
+                            <a type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
+                                data-bs-target="#bookpack{{ package.id }}">
                                 Book Now
                             </a>
 
@@ -79,16 +79,18 @@
                                                 aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            <form method="post" action="/customer/book_package/{{ package.id }}">
-                                                
+                                            <form method="post" action="/customer/book/{{ package.id }}">
+
                                                 <div class="form-floating mb-3">
                                                     <input type="date" class="form-control" id="floatingStartDate"
-                                                        required placeholder="Date" name="start_date" value="{{package.date}}">
+                                                        required placeholder="Date" name="date"
+                                                        value="{{package.date}}" max="{{ package.end_date }}" min="{{ package.start_date }}">
                                                     <label for="floatingStartDate">Date</label>
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input type="time" class="form-control" id="floatingEndDate"
-                                                        required placeholder="End Date" name="end_date" value="{{package.time}}">
+                                                        required placeholder="End Date" name="time"
+                                                        value="{{package.time}}">
                                                     <label for="floatingEndDate">Time</label>
                                                 </div>
 
@@ -106,6 +108,102 @@
                 {% endfor %}
 
 
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card mt-5 ms-5 me-5 mb-5">
+        <div class="card-header">
+            <h3>Bookings</h3>
+
+        </div>
+        <div class="card-body">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-active-cust-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-active-cust" type="button" role="tab" aria-controls="pills-home"
+                        aria-selected="true">Accepted</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-flagged-cust-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-flagged-cust" type="button" role="tab" aria-controls="pills-profile"
+                        aria-selected="false">Requested</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-completed-cust-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-completed-cust" type="button" role="tab" aria-controls="pills-profile"
+                        aria-selected="false">Completed/Rejected</button>
+                </li>
+
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-active-cust" role="tabpanel"
+                    aria-labelledby="pills-active-cust-tab" tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Package Title</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">time</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cust in customers %}
+                            {% if cust.status =="Active" %}
+                            <tr>
+
+                                <td>{{ cust.name }}</td>
+                                <td>{{ cust.email }}</td>
+                                <td>{{ cust.address }}</td>
+                                <td>{{ cust.mobile }}</td>
+                                <td>
+                                    <a href="/admin/customer/Flag/{{ cust.id }}" class="btn btn-sm btn-primary">Flag</a>
+                                </td>
+
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+                <div class="tab-pane fade" id="pills-flagged-cust" role="tabpanel"
+                    aria-labelledby="pills-flagged-cust-tab" tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <th scope="col">Package Title</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">time</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Action</th>
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            {% if booking.status =="Requested" %}
+                            <tr>
+
+                                <td>{{ booking.package.title }}</td>
+                                <td>{{ booking.package.price }}</td>
+                                <td>{{ booking.date }}</td>
+                                <td>{{ booking.start_time }}</td>
+                                <td>{{ booking.status }}</td>
+                             
+                            </tr>
+
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
             </div>
 
         </div>

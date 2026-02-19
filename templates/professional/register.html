@@ -14,7 +14,7 @@
     <div class="d-flex justify-content-center">
         <div class="card">
             <div class="card-body">
-                <form method="post" action="/register?role=professional">
+                <form method="post" action="/register?role=professional" enctype="multipart/form-data">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingName" placeholder="Name" name="prof_name">
                         <label for="floatingName">Name</label>
@@ -40,7 +40,7 @@
                         <label for="floatingExperience">Experience</label>
                     </div>
                     <div class="form-floating">
-                        <input type="file" class="form-control" id="floatingResume" placeholder="Resume">
+                        <input type="file" class="form-control" id="floatingResume" placeholder="Resume" name="prof_resume" required>
                         <label for="floatingResume">Resume</label>
                     </div>
                     
