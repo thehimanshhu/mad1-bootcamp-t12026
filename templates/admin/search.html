@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">HomeEase</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto me-5">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/admin/dashboard">Dashboard</a>
+                    </li>
+                    <li class="nav-item me-2">
+                        <a class="nav-link" href="/admin/search">Search</a>
+                    </li>
+                    <li class="nav-item ">
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle fs-4"></i>
+                            </a>
+
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="/logout">logout</a></li>
+
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex justify-content-center">
+        <div class="card  mt-5 ms-5 me-5" style="width: 30rem;">
+            <div class="card-header">
+                <h3>Search</h3>
+
+            </div>
+            <div class="card-body">
+                <form action="/admin/search" method="post">
+                    <div class="d-flex">
+
+
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="radio" name="query_type" value="customer"
+                                id="customerRadio" checked>
+                            <label class="form-check-label" for="customerRadio">
+                                Customer
+                            </label>
+                        </div>
+                        <div class="form-check me-3">
+                            <input class="form-check-input" type="radio" name="query_type" value="professional"
+                                id="professionalRadio">
+                            <label class="form-check-label" for="professionalRadio">
+                                Professional
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="query_type" value="package"
+                                id="packageRadio">
+                            <label class="form-check-label" for="packageRadio">
+                                Package
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex ">
+                        <div class="form-floating ">
+                            <input type="text" class="form-control" id="floatingInput" name="query"
+                                placeholder="Enter search query" required {% if query %}value="{{ query }}"{% endif %}>
+                            <label for="floatingInput">Search Query</label>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary mt-2 ms-3">Search</button>
+                        </div>
+                    </div>
+
+
+
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+    {% if query_type =="customer"  %}
+    <div class="card mt-5 ms-5 me-5 ">
+        <div class="card-header">
+            <h3>Search Results for Customers </h3>
+        </div>
+        
+        <div class="card-body">
+            {% if results %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cust in results  %}
+
+                    <tr>
+
+                        <td>{{ cust.name }}</td>
+                        <td>{{ cust.email }}</td>
+                        <td>{{ cust.address }}</td>
+                        <td>{{ cust.mobile }}</td>
+                        <td>{{ cust.status }}</td>
+                        <td>
+                            <a href="/admin/customer-details/{{ cust.id }}" class="btn btn-sm btn-primary">View
+                                Details</a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center">
+                <p>No results found for the given customers</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if query_type =="professional"  %}
+    <div class="card mt-5 ms-5 me-5 ">
+        <div class="card-header">
+            <h3>Search Results for Professionals </h3>
+        </div>
+        
+        <div class="card-body">
+            {% if results %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Mobile</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for prof in results  %}
+
+                    <tr>
+
+                        <td>{{ prof.name }}</td>
+                        <td>{{ prof.email }}</td>
+                        <td>{{ prof.address }}</td>
+                        <td>{{ prof.mobile }}</td>
+                        <td>{{ prof.status }}</td>
+                        <td>
+                            <a href="/admin/professional-details/{{ prof.id }}" class="btn btn-sm btn-primary">View
+                                Details</a>
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center">
+                <p>No results found for the given professionals</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

@@ -11,6 +11,20 @@
 </head>
 
 <body>
+    {% if cu.status=="Registered" %}
+    <div class="alert alert-info mt-5 ms-5 me-5" role="alert">
+        Your account is pending approval. Please wait for the admin to review your application.
+    </div>
+
+    {% elif cu.status=="Rejected" %}
+    <div class="alert alert-danger ms-5 me-5 mt-5" role="alert">
+        Your account has been rejected.
+    </div>
+    {% elif cu.status=="Flagged" %}
+    <div class="alert alert-danger ms-5 me-5 mt-5" role="alert">
+        Your account has been flagged.
+    </div>
+    {% elif cu.status=="Active" %}
     <nav class="navbar navbar-expand-lg bg-body-tertiary">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">HomeEase</a>
@@ -42,13 +56,29 @@
             </div>
         </div>
     </nav>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-danger ms-5 mt-5 me-5" role="alert">
+        <div class="d-flex">
+            <p>
+                {{ message }}
+            </p>
 
+            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
+
+        </div>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
     <div class="card mt-5 ms-5 me-5">
         <div class="card-header">
             <div class="d-flex d-inline">
                 <h3>Packages</h3>
 
-                <a  type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
+                <a type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
                     data-bs-target="#addPackageModal">
                     Add Package
                 </a>
@@ -82,7 +112,7 @@
                                     </div>
                                     <div class="form-floating mb-3">
                                         <input type="date" class="form-control" id="floatingStartDate" required
-                                            placeholder="Start Date" name="start_date">
+                                            placeholder="Start Date" name="start_date" min="{{today}}">
                                         <label for="floatingStartDate">Start Date</label>
                                     </div>
                                     <div class="form-floating mb-3">
@@ -113,8 +143,8 @@
                             <p class="card-text"><strong>Price:</strong> ${{ package.price }}</p>
                             <p class="card-text"><strong>Start Date:</strong> {{ package.start_date }}</p>
                             <p class="card-text"><strong>End Date:</strong> {{ package.end_date }}</p>
-                            <a  type="button" class="btn btn-primary ms-auto"
-                                data-bs-toggle="modal" data-bs-target="#editpack{{ package.id }}">
+                            <a type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
+                                data-bs-target="#editpack{{ package.id }}">
                                 Edit Package
                             </a>
 
@@ -131,28 +161,33 @@
                                         <div class="modal-body">
                                             <form method="post" action="/professional/edit_package/{{ package.id }}">
                                                 <div class="form-floating mb-3">
-                                                    <input type="text" class="form-control" id="floatingInput" required value="{{package.title}}"
-                                                        placeholder="Package Title" name="title">
+                                                    <input type="text" class="form-control" id="floatingInput" required
+                                                        value="{{package.title}}" placeholder="Package Title"
+                                                        name="title">
                                                     <label for="floatingInput">Package Title</label>
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input type="text" class="form-control" id="floatingDescription"
-                                                        required placeholder="Description" name="description" value="{{package.description}}">
+                                                        required placeholder="Description" name="description"
+                                                        value="{{package.description}}">
                                                     <label for="floatingDescription">Description</label>
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input type="number" class="form-control" id="floatingPrice"
-                                                        required placeholder="Price" name="price" value="{{package.price}}">
+                                                        required placeholder="Price" name="price"
+                                                        value="{{package.price}}">
                                                     <label for="floatingPrice">Price</label>
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input type="date" class="form-control" id="floatingStartDate"
-                                                        required placeholder="Start Date" name="start_date" value="{{package.start_date}}">
+                                                        required placeholder="Start Date" name="start_date"
+                                                        value="{{package.start_date}}">
                                                     <label for="floatingStartDate">Start Date</label>
                                                 </div>
                                                 <div class="form-floating mb-3">
                                                     <input type="date" class="form-control" id="floatingEndDate"
-                                                        required placeholder="End Date" name="end_date" value="{{package.end_date}}">
+                                                        required placeholder="End Date" name="end_date"
+                                                        value="{{package.end_date}}">
                                                     <label for="floatingEndDate">End Date</label>
                                                 </div>
 
@@ -188,13 +223,13 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="pills-requested-bookings-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-requested-bookings" type="button" role="tab" aria-controls="pills-profile"
-                        aria-selected="false">Requested</button>
+                        data-bs-target="#pills-requested-bookings" type="button" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Requested</button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="pills-completed-bookings-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-completed-bookings" type="button" role="tab" aria-controls="pills-profile"
-                        aria-selected="false">Completed/Rejected</button>
+                        data-bs-target="#pills-completed-bookings" type="button" role="tab"
+                        aria-controls="pills-profile" aria-selected="false">Completed/Rejected</button>
                 </li>
 
             </ul>
@@ -212,7 +247,7 @@
                                 <th scope="col">Date</th>
                                 <th scope="col">time</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Action</th>
+
                             </tr>
                         </thead>
                         <tbody>
@@ -228,7 +263,7 @@
                                 <td>{{ booking.date }}</td>
                                 <td>{{ booking.start_time }}</td>
                                 <td>{{ booking.status }}</td>
-                                
+
 
                             </tr>
                             {% endif %}
@@ -266,9 +301,11 @@
                                 <td>{{ booking.start_time }}</td>
                                 <td>{{ booking.status }}</td>
                                 <td>
-                                    <a href="/professional/accept/{{ booking.id }}" class="btn btn-sm btn-success">Accept</a>
-                                    <a href="/professional/reject/{{ booking.id }}" class="btn btn-sm btn-danger">Reject</a>
-                             
+                                    <a href="/professional/accept/{{ booking.id }}"
+                                        class="btn btn-sm btn-success">Accept</a>
+                                    <a href="/professional/reject/{{ booking.id }}"
+                                        class="btn btn-sm btn-danger">Reject</a>
+
                             </tr>
 
                             {% endif %}
@@ -280,48 +317,49 @@
                 </div>
             </div>
             <div class="tab-pane fade" id="pills-completed-bookings" role="tabpanel"
-                    aria-labelledby="pills-completed-bookings-tab" tabindex="0">
-                    <table class="table">
-                        <thead>
-                            <th scope="col">Package Title</th>
-                            <th scope="col">Customer Name</th>
-                            <th scope="col">Customer Email</th>
-                            <th scope="col">Customer Mobile</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">time</th>
-                            <th scope="col">Status</th>
-                        
-                        </thead>
-                        <tbody>
-                            {% for booking in bookings %}
-                            {% if booking.status =="Completed" or booking.status=="Rejected" %}
-                            <tr>
+                aria-labelledby="pills-completed-bookings-tab" tabindex="0">
+                <table class="table">
+                    <thead>
+                        <th scope="col">Package Title</th>
+                        <th scope="col">Customer Name</th>
+                        <th scope="col">Customer Email</th>
+                        <th scope="col">Customer Mobile</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">time</th>
+                        <th scope="col">Status</th>
 
-                                <td>{{ booking.package.title }}</td>
-                                <td>{{booking.customer.name}}</td>
-                                <td>{{booking.customer.email}}</td>
-                                <td>{{booking.customer.mobile}}</td>
-                                <td>{{ booking.package.price }}</td>
-                                <td>{{ booking.date }}</td>
-                                <td>{{ booking.start_time }}</td>
-                                <td>{{ booking.status }}</td>
-                            
-                             
-                            </tr>
+                    </thead>
+                    <tbody>
+                        {% for booking in bookings %}
+                        {% if booking.status =="Completed" or booking.status=="Rejected" %}
+                        <tr>
 
-                            {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                            <td>{{ booking.package.title }}</td>
+                            <td>{{booking.customer.name}}</td>
+                            <td>{{booking.customer.email}}</td>
+                            <td>{{booking.customer.mobile}}</td>
+                            <td>{{ booking.package.price }}</td>
+                            <td>{{ booking.date }}</td>
+                            <td>{{ booking.start_time }}</td>
+                            <td>{{ booking.status }}</td>
 
 
-                </div>
+                        </tr>
+
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+
             </div>
-
-
         </div>
+
+
     </div>
+    </div>
+    {% endif %}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>

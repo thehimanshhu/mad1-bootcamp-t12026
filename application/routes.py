@@ -1,7 +1,9 @@
 from flask import current_app as app
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect , flash
 from .models import db , Admin , Customer , Professional , Package , Booking
 from flask_login import login_user , login_required ,   current_user , logout_user
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from datetime import datetime
 @app.route("/hello")
 def index():
@@ -71,9 +73,12 @@ def login():
                     login_user(user)
                     return redirect("/customer/dashboard")
             else:
-                return "Invalid password"
+
+                flash("Invalid password")
+                return render_template("login.html" , email=email , password=password)
         else:
-            return "User not found"
+            flash("User not found")
+            return redirect("/login")
 
 @app.route("/customer/dashboard")
 @login_required
@@ -96,14 +101,17 @@ def customer_dashboard():
 def professional_dashboard():
     packages = db.session.query(Package).filter_by(prof_id=current_user.id).all()
     bookings = current_user.bookings
-    return render_template("professional/dashboard.html" , cu=current_user, packages=packages, bookings=bookings)
+    date = datetime.now().date()
+    return render_template("professional/dashboard.html" , cu=current_user, packages=packages, bookings=bookings , today=date)
 
 @app.route("/admin/dashboard")
 @login_required
 def admin_dashboard():  
     profs = db.session.query(Professional).all()
     customers = db.session.query(Customer).all()
-    return render_template("admin/dashboard.html", cu=current_user, profs=profs , customers=customers)
+    profs_count = db.session.query(Professional).filter(or_(Professional.status=="Active" , Professional.status=="Flagged" ,Professional.status=="Registered")).count()
+    customer_count = db.session.query(Customer).filter(or_(Customer.status=="Active" , Customer.status=="Flagged" ,Customer.status=="Registered")).count()
+    return render_template("admin/dashboard.html", cu=current_user, profs=profs , customers=customers, profs_count=profs_count, customer_count=customer_count  )
 
 
 @app.route("/admin/professional/<string:action>/<int:prof_id>")
@@ -122,6 +130,7 @@ def approve_professional(action, prof_id):
             for package in prof.packages:
                 package.status = "Inactive"
             db.session.commit()
+            flash(f"Professional {prof.name} has been flagged. All their packages are now inactive.")
         elif action =="Unflag" and prof.status=="Flagged":
             prof.status = "Active"
             for package in prof.packages:
@@ -198,6 +207,35 @@ def professional_booking_action(action, booking_id):
             booking.status = "Rejected"
         db.session.commit()
     return redirect("/professional/dashboard")
+
+@app.route("/admin/professional-details/<int:prof_id>")
+@login_required
+def professional_details(prof_id):
+    prof = db.session.query(Professional).filter_by(id=prof_id).first()
+    if prof:
+        packages = prof.packages
+        bookings = prof.bookings
+        return render_template("admin/professional_details.html" ,prof =prof, packages=packages , bookings=bookings)
+    else:
+        return "Professional not found"
+
+
+@app.route("/admin/search" , methods=["GET" , "POST"])
+def admin_search():
+    if request.method=="GET":
+        return render_template("admin/search.html")
+    elif request.method=="POST":
+        query_type=request.form.get("query_type")
+        query = request.form.get("query")
+        if query_type == "customer":
+            customers = db.session.query(Customer).filter(or_(Customer.name.contains(query) , Customer.email.contains(query))).all()
+            return render_template("admin/search.html" , results=customers , query_type=query_type , query=query)
+        elif query_type == "professional":
+            professionals = db.session.query(Professional).filter(or_(Professional.name.contains(query) , Professional.email.contains(query))).all()
+            return render_template("admin/search.html" , results=professionals , query_type=query_type , query=query)
+        elif query_type == "package":
+            packages = db.session.query(Package).filter(or_(Package.title.contains(query) , Package.description.contains(query))).all()
+            return render_template("admin/search.html" , results=packages , query_type=query_type , query=query)
 
 @app.route("/logout")
 @login_required

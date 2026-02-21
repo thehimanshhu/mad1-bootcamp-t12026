@@ -21,10 +21,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto me-5">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+                        <a class="nav-link active" aria-current="page" href="/admin/dashboard">Dashboard</a>
                     </li>
                     <li class="nav-item me-2">
-                        <a class="nav-link" href="#">Search</a>
+                        <a class="nav-link" href="/admin/search">Search</a>
                     </li>
                     <li class="nav-item ">
                         <div class="dropdown">
@@ -43,10 +43,18 @@
         </div>
     </nav>
 
+    <div>
+        <h1 class="text-center mt-5">Professional Details</h1>
+        <h4 class="text-center">{{ prof.name }}</h4>
+        <h5 class="text-center">{{ prof.email }}</h5>
+    </div>
+
     <div class="card mt-5 ms-5 me-5">
         <div class="card-header">
             <div class="d-flex d-inline">
                 <h3>Packages</h3>
+
+                
             </div>
 
         </div>
@@ -58,52 +66,10 @@
                         <div class="card-body">
                             <h5 class="card-title text-center">{{ package.title }}</h5>
                             <p class="card-text">{{ package.description }}</p>
-
-                            <p class="card-text"> Professional: {{ package.professional.name }}</p>
                             <p class="card-text"><strong>Price:</strong> ${{ package.price }}</p>
                             <p class="card-text"><strong>Start Date:</strong> {{ package.start_date }}</p>
                             <p class="card-text"><strong>End Date:</strong> {{ package.end_date }}</p>
-                             
-                            <a type="button" class="btn btn-primary ms-auto" data-bs-toggle="modal"
-                                data-bs-target="#bookpack{{ package.id }}">
-
-                                Book Now
-                            </a>
-
-                            <!-- Modal -->
-                            <div class="modal fade" id="bookpack{{ package.id }}" tabindex="-1"
-                                aria-labelledby="addPackageModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="addPackageModalLabel">Book Package</h1>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form method="post" action="/customer/book/{{ package.id }}">
-
-                                                <div class="form-floating mb-3">
-                                                    <input type="date" class="form-control" id="floatingStartDate"
-                                                        required placeholder="Date" name="date"
-                                                        value="{{package.date}}" max="{{ package.end_date }}" min="{{ package.start_date }}">
-                                                    <label for="floatingStartDate">Date</label>
-                                                </div>
-                                                <div class="form-floating mb-3">
-                                                    <input type="time" class="form-control" id="floatingEndDate"
-                                                        required placeholder="End Date" name="time"
-                                                        value="{{package.time}}">
-                                                    <label for="floatingEndDate">Time</label>
-                                                </div>
-
-                                                <button type="submit" class="btn btn-primary" >Book</button>
-
-                                            </form>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -114,8 +80,6 @@
 
         </div>
     </div>
-
-
     <div class="card mt-5 ms-5 me-5 mb-5">
         <div class="card-header">
             <h3>Bookings</h3>
@@ -124,37 +88,37 @@
         <div class="card-body">
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="pills-active-cust-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-active-cust" type="button" role="tab" aria-controls="pills-home"
+                    <button class="nav-link active" id="pills-accepted-bookings-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-accepted-bookings" type="button" role="tab" aria-controls="pills-home"
                         aria-selected="true">Accepted</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-flagged-cust-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-flagged-cust" type="button" role="tab" aria-controls="pills-profile"
+                    <button class="nav-link" id="pills-requested-bookings-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-requested-bookings" type="button" role="tab" aria-controls="pills-profile"
                         aria-selected="false">Requested</button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="pills-completed-cust-tab" data-bs-toggle="pill"
-                        data-bs-target="#pills-completed-cust" type="button" role="tab" aria-controls="pills-profile"
+                    <button class="nav-link" id="pills-completed-bookings-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-completed-bookings" type="button" role="tab" aria-controls="pills-profile"
                         aria-selected="false">Completed/Rejected</button>
                 </li>
 
             </ul>
             <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-active-cust" role="tabpanel"
-                    aria-labelledby="pills-active-cust-tab" tabindex="0">
+                <div class="tab-pane fade show active" id="pills-accepted-bookings" role="tabpanel"
+                    aria-labelledby="pills-accepted-bookings-tab" tabindex="0">
                     <table class="table">
                         <thead>
                             <tr>
                                 <th scope="col">Package Title</th>
+                                <th scope="col">Customer Name</th>
+                                <th scope="col">Customer Email</th>
+                                <th scope="col">Customer Mobile</th>
                                 <th scope="col">Price</th>
-                                <th scope="col">Professional Name</th>
-                                <th scope="col">Professional Mobile</th>
-                                <th scope="col">Professional Email</th>
                                 <th scope="col">Date</th>
                                 <th scope="col">time</th>
                                 <th scope="col">Status</th>
-            
+                              
                             </tr>
                         </thead>
                         <tbody>
@@ -163,14 +127,14 @@
                             <tr>
 
                                 <td>{{ booking.package.title }}</td>
+                                <td>{{booking.customer.name}}</td>
+                                <td>{{booking.customer.email}}</td>
+                                <td>{{booking.customer.mobile}}</td>
                                 <td>{{ booking.package.price }}</td>
-                                <td>{{ booking.professional.name }}</td>
-                                <td>{{ booking.professional.mobile }}</td>
-                                <td>{{ booking.professional.email }}</td>
                                 <td>{{ booking.date }}</td>
                                 <td>{{ booking.start_time }}</td>
                                 <td>{{ booking.status }}</td>
-                               
+                                
 
                             </tr>
                             {% endif %}
@@ -180,11 +144,14 @@
 
 
                 </div>
-                <div class="tab-pane fade" id="pills-flagged-cust" role="tabpanel"
-                    aria-labelledby="pills-flagged-cust-tab" tabindex="0">
+                <div class="tab-pane fade" id="pills-requested-bookings" role="tabpanel"
+                    aria-labelledby="pills-requested-bookings-tab" tabindex="0">
                     <table class="table">
                         <thead>
                             <th scope="col">Package Title</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Customer Email</th>
+                            <th scope="col">Customer Mobile</th>
                             <th scope="col">Price</th>
                             <th scope="col">Date</th>
                             <th scope="col">time</th>
@@ -197,6 +164,9 @@
                             <tr>
 
                                 <td>{{ booking.package.title }}</td>
+                                <td>{{booking.customer.name}}</td>
+                                <td>{{booking.customer.email}}</td>
+                                <td>{{booking.customer.mobile}}</td>
                                 <td>{{ booking.package.price }}</td>
                                 <td>{{ booking.date }}</td>
                                 <td>{{ booking.start_time }}</td>
@@ -212,6 +182,46 @@
 
                 </div>
             </div>
+            <div class="tab-pane fade" id="pills-completed-bookings" role="tabpanel"
+                    aria-labelledby="pills-completed-bookings-tab" tabindex="0">
+                    <table class="table">
+                        <thead>
+                            <th scope="col">Package Title</th>
+                            <th scope="col">Customer Name</th>
+                            <th scope="col">Customer Email</th>
+                            <th scope="col">Customer Mobile</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">time</th>
+                            <th scope="col">Status</th>
+                        
+                        </thead>
+                        <tbody>
+                            {% for booking in bookings %}
+                            {% if booking.status =="Completed" or booking.status=="Rejected" %}
+                            <tr>
+
+                                <td>{{ booking.package.title }}</td>
+                                <td>{{booking.customer.name}}</td>
+                                <td>{{booking.customer.email}}</td>
+                                <td>{{booking.customer.mobile}}</td>
+                                <td>{{ booking.package.price }}</td>
+                                <td>{{ booking.date }}</td>
+                                <td>{{ booking.start_time }}</td>
+                                <td>{{ booking.status }}</td>
+                            
+                             
+                            </tr>
+
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                </div>
+            </div>
+
 
         </div>
     </div>
