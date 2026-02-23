@@ -5,6 +5,9 @@ from flask_login import login_user , login_required ,   current_user , logout_us
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import or_
 from datetime import datetime
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')  
 @app.route("/hello")
 def index():
     return "hello"
@@ -15,7 +18,8 @@ def home():
 
 @app.route("/register" , methods=["GET" , "POST"])
 def register():
-    if request.args.get("role") =='customer' and request.method=="GET":
+    
+    if request.args.get("role") =='customer' and request.method=="GET": 
         return render_template("customer/register.html")
     elif request.args.get("role") =="professional" and request.method=="GET":
         return render_template("professional/register.html")
@@ -100,6 +104,7 @@ def customer_dashboard():
 @login_required
 def professional_dashboard():
     packages = db.session.query(Package).filter_by(prof_id=current_user.id).all()
+    print(packages)
     bookings = current_user.bookings
     date = datetime.now().date()
     return render_template("professional/dashboard.html" , cu=current_user, packages=packages, bookings=bookings , today=date)
@@ -237,8 +242,38 @@ def admin_search():
             packages = db.session.query(Package).filter(or_(Package.title.contains(query) , Package.description.contains(query))).all()
             return render_template("admin/search.html" , results=packages , query_type=query_type , query=query)
 
+
+@app.route("/admin/statistics")
+@login_required
+def admin_statistics():
+    profs = db.session.query(Professional).all()
+    status = ["Active" , "Flagged" , "Registered" , "Rejected"]
+    status_count = [0, 0, 0, 0] 
+    for prof in profs:
+        if prof.status =="Active":
+            status_count[0] += 1
+        if prof.status =="Flagged":
+            status_count[1] += 1
+        if prof.status =="Registered":
+            status_count[2] += 1
+        if prof.status =="Rejected":
+            status_count[3] += 1
+    plt.bar(status, status_count)
+    plt.xlabel("Professional Status")
+    plt.ylabel("Count")
+    plt.title("Professional Status Distribution")
+    plt.savefig("static/prof_status_distribution.png")
+    plt.close()
+
+    return render_template("admin/statistics.html", cu=current_user, profs=profs, status=status)
+
 @app.route("/logout")
 @login_required
 def logout():
     logout_user()
     return redirect("/login")
+
+
+@app.route("/myname" , methods=["POST"])
+def myname():
+    return "My name is Himanshu"
